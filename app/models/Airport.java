@@ -4,7 +4,7 @@ import java.io.Serializable;
 import com.opencsv.bean.CsvBindByName;
 
 public class Airport implements Serializable {
-	@CsvBindByName private int id;
+	@CsvBindByName public int id;
 	@CsvBindByName private String ident;
 	@CsvBindByName private String type;
 	@CsvBindByName public String name;

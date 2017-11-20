@@ -12,6 +12,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 import com.opencsv.bean.HeaderColumnNameMappingStrategy;
@@ -26,6 +28,7 @@ public class Main implements Airports {
 	private final List<Country> countries = new ArrayList<>();
 	private final List<Airport> airports = new ArrayList<>();
 	private final List<Runway> runways = new ArrayList<>();
+	private final Map<Integer, List<Runway>> runwaysByAirport = new HashMap<>();
 
 	public Main() {
 		if (file.exists()) {
@@ -38,6 +41,14 @@ public class Main implements Airports {
 		System.out.println("countries : " + countries.size());
 		System.out.println("airports : " + airports.size());
 		System.out.println("runways : " + runways.size());
+		runways.stream().forEach(runway -> {
+			final int ref = runway.getAirport_ref();
+			List<Runway> list = runwaysByAirport.get(ref);
+			if (list == null) {
+				runwaysByAirport.put(ref, list = new ArrayList<>());
+			}
+			list.add(runway);
+		});
 		Runtime.getRuntime().addShutdownHook(new Thread() {
 			public void run() {
 				store();
@@ -103,6 +114,10 @@ public class Main implements Airports {
 
 	public List<Runway> getRunways() {
 		return runways;
+	}
+
+	public Map<Integer, List<Runway>> getRunwaysByAirport() {
+		return runwaysByAirport;
 	}
 
 	public static void main(final String args[]) {

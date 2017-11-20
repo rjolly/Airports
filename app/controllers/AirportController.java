@@ -36,10 +36,10 @@ public class AirportController extends Controller {
         if (boundForm.hasErrors()) {
             Logger.ALogger logger = Logger.of(getClass());
             logger.error("errors = {}", boundForm.errors());
-            return badRequest(views.html.listAirports.render(asScala(Collections.emptyList()), boundForm));
+            return badRequest(views.html.listAirports.render(asScala(Collections.emptyList()), Collections.emptyMap(), boundForm));
         } else {
             final AirportData data = boundForm.get();
-            return ok(views.html.listAirports.render(asScala(airports.getAirports().stream().filter(airport -> airport.getIso_country().equals(data.getCountryCode())).collect(Collectors.toList())), boundForm));
+            return ok(views.html.listAirports.render(asScala(airports.getAirports().stream().filter(airport -> airport.getIso_country().equals(data.getCountryCode())).collect(Collectors.toList())), airports.getRunwaysByAirport(), boundForm));
         }
     }
 
