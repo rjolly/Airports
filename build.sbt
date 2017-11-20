@@ -9,3 +9,5 @@ scalaVersion := "2.12.2"
 testOptions in Test := Seq(Tests.Argument(TestFrameworks.JUnit, "-a", "-v"))
 
 libraryDependencies += guice
+
+libraryDependencies += "com.opencsv"%"opencsv"%"4.0"
