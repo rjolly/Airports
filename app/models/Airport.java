@@ -7,12 +7,12 @@ public class Airport implements Serializable {
 	@CsvBindByName private int id;
 	@CsvBindByName private String ident;
 	@CsvBindByName private String type;
-	@CsvBindByName private String name;
+	@CsvBindByName public String name;
 	@CsvBindByName private double latitude_deg;
 	@CsvBindByName private double longitude_deg;
 	@CsvBindByName private int elevation_ft;
 	@CsvBindByName private String continent;
-	@CsvBindByName private String iso_country;
+	@CsvBindByName public String iso_country;
 	@CsvBindByName private String iso_region;
 	@CsvBindByName private String municipality;
 	@CsvBindByName private String scheduled_service;

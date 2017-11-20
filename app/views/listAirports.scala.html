@@ -1,0 +1,38 @@
+@(airports: Seq[Airport], form: Form[AirportData])
+
+@main("Airports") {
+
+    <h1>Airports</h1>
+
+    <table>
+        <thead>
+            <tr><th>Airport</th><th>Runway</th>
+        </thead>
+        <tbody>
+        @for(airport <- airports) {
+            <tr><td>@airport.name</td><td>@airport.iso_country</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <hr/>
+
+    @* Global errors are not tied to any particular form field *@
+    @if(form.hasGlobalErrors) {
+        @form.globalErrors.asScala.map { error: play.data.validation.ValidationError =>
+            <div>
+                @error.key: @error.message
+            </div>
+        }
+    }
+
+    @helper.form(routes.AirportController.listAirports) {
+        @helper.CSRF.formField
+
+        @helper.inputText(form("countryName"))
+
+        @helper.inputText(form("countryCode"))
+
+        <button type="submit">List airports</button>
+    }
+}
