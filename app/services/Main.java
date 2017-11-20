@@ -48,7 +48,7 @@ public class Main implements Airports {
 	@SuppressWarnings("unchecked")
 	private <T> List<T> get(final String str, final Class<T> cls) {
 		System.out.println("retrieving " + str);
-		try (final Reader reader = new InputStreamReader(new URL(str).openStream())) {
+		try (final Reader reader = new InputStreamReader(new URL(str).openStream(), "UTF-8")) {
 			final CsvToBean c = new CsvToBeanBuilder(reader).withType(cls).build();
 			final MappingStrategy s = new HeaderColumnNameMappingStrategy() {
 				@Override
