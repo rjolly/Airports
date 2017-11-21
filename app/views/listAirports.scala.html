@@ -1,4 +1,4 @@
-@(airports: Seq[Airport], runwaysByAirport: java.util.Map[Integer, java.util.List[Runway]], form: Form[AirportData])
+@(list: Seq[org.apache.commons.lang3.tuple.Pair[Airport, java.util.List[Runway]]], form: Form[AirportData])
 
 @main("Airports") {
 
@@ -9,8 +9,8 @@
             <tr><th>Airport</th><th>Runways</th>
         </thead>
         <tbody>
-        @for(airport <- airports) {
-            <tr><td>@airport.name</td><td>@runwaysByAirport.get(airport.id)</td></tr>
+        @for(item <- list) {
+            <tr><td>@item.getLeft().name</td><td>@item.getRight()</td></tr>
         }
         </tbody>
     </table>

@@ -29,6 +29,7 @@ public class Main implements Airports {
 	private final List<Airport> airports = new ArrayList<>();
 	private final List<Runway> runways = new ArrayList<>();
 	private final Map<Integer, List<Runway>> runwaysByAirport = new HashMap<>();
+	private final Map<String, List<Airport>> airportsByCountry = new HashMap<>();
 
 	public Main() {
 		if (file.exists()) {
@@ -37,6 +38,11 @@ public class Main implements Airports {
 			countries.addAll(get(path + "countries.csv", Country.class));
 			airports.addAll(get(path + "airports.csv", Airport.class));
 			runways.addAll(get(path + "runways.csv", Runway.class));
+			Runtime.getRuntime().addShutdownHook(new Thread() {
+				public void run() {
+					store();
+				}
+			});
 		}
 		System.out.println("countries : " + countries.size());
 		System.out.println("airports : " + airports.size());
@@ -49,10 +55,13 @@ public class Main implements Airports {
 			}
 			list.add(runway);
 		});
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				store();
+		airports.stream().forEach(airport -> {
+			final String code = airport.getIso_country();
+			List<Airport> list = airportsByCountry.get(code);
+			if (list == null) {
+				airportsByCountry.put(code, list = new ArrayList<>());
 			}
+			list.add(airport);
 		});
 	}
 
@@ -118,6 +127,10 @@ public class Main implements Airports {
 
 	public Map<Integer, List<Runway>> getRunwaysByAirport() {
 		return runwaysByAirport;
+	}
+
+	public Map<String, List<Airport>> getAirportsByCountry() {
+		return airportsByCountry;
 	}
 
 	public static void main(final String args[]) {
