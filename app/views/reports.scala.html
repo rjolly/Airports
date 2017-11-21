@@ -1,0 +1,32 @@
+@(high: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], low: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]])
+
+@main("Reports") {
+
+    <h1>Reports</h1>
+
+    <h2>Countries with highest number of airports</h2>
+
+    <table>
+        <thead>
+            <tr><th>Country</th><th>Count</th>
+        </thead>
+        <tbody>
+        @for(item <- high) {
+            <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Countries with lowest number of airports</h2>
+
+    <table>
+        <thead>
+            <tr><th>Country</th><th>Count</th>
+        </thead>
+        <tbody>
+        @for(item <- low) {
+            <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
+        }
+        </tbody>
+    </table>
+}
