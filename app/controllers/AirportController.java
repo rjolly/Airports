@@ -88,7 +88,7 @@ public class AirportController extends Controller {
 			return ok(views.html.listAirports.render(
 				Optional.ofNullable(countryCode).map(c -> cbc.get(c)).orElse(null),
 				asScala(orEmpty(abc.get(countryCode)).stream().map(
-					airport -> Pair.of(airport, orEmpty(rba.get(airport.id)))
+					airport -> Pair.of(airport, orEmpty(rba.get(airport.getId())))
 				).sorted(comp).collect(Collectors.toList())),
 				boundForm)
 			);

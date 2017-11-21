@@ -4,15 +4,15 @@ import java.io.Serializable;
 import com.opencsv.bean.CsvBindByName;
 
 public class Airport implements Serializable {
-	@CsvBindByName public int id;
+	@CsvBindByName private int id;
 	@CsvBindByName private String ident;
 	@CsvBindByName private String type;
-	@CsvBindByName public String name;
+	@CsvBindByName private String name;
 	@CsvBindByName private double latitude_deg;
 	@CsvBindByName private double longitude_deg;
 	@CsvBindByName private int elevation_ft;
 	@CsvBindByName private String continent;
-	@CsvBindByName public String iso_country;
+	@CsvBindByName private String iso_country;
 	@CsvBindByName private String iso_region;
 	@CsvBindByName private String municipality;
 	@CsvBindByName private String scheduled_service;
