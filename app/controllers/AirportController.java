@@ -79,12 +79,19 @@ public class AirportController extends Controller {
 			return badRequest(views.html.listAirports.render(null, asScala(Collections.emptyList()), boundForm));
 		} else {
 			final AirportData data = boundForm.get();
+			final Comparator<Pair<Airport, List<Runway>>> comp = Comparator.comparing(p -> p.getLeft().getName());
 			final Optional<String> countryName = Optional.ofNullable(data.getCountryName()).map(c -> c.toLowerCase()).filter(c -> !c.isEmpty());
 			final String countryCode = Optional.ofNullable(data.getCountryCode()).map(c -> c.toUpperCase()).filter(c -> !c.isEmpty()).orElse(countryName.map(name -> getCountryCode(name)).orElse(null));
 			final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
 			final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
 			final Map<String, Country> cbc = airports.getCountriesByCode();
-			return ok(views.html.listAirports.render(Optional.ofNullable(countryCode).map(c -> cbc.get(c)).orElse(null), asScala(abc.containsKey(countryCode)?abc.get(countryCode).stream().map(airport -> Pair.of(airport, rba.get(airport.id))).collect(Collectors.toList()):Collections.emptyList()), boundForm));
+			return ok(views.html.listAirports.render(
+				Optional.ofNullable(countryCode).map(c -> cbc.get(c)).orElse(null),
+				asScala(orEmpty(abc.get(countryCode)).stream().map(
+					airport -> Pair.of(airport, orEmpty(rba.get(airport.id)))
+				).sorted(comp).collect(Collectors.toList())),
+				boundForm)
+			);
 		}
 	}
 
