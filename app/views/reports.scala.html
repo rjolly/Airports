@@ -1,4 +1,4 @@
-@(high: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], low: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]])
+@(high: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], low: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], list: Seq[org.apache.commons.lang3.tuple.Pair[Country, java.util.List[String]]])
 
 @main("Reports") {
 
@@ -25,6 +25,19 @@
         </thead>
         <tbody>
         @for(item <- low) {
+            <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Type of runways</h2>
+
+    <table>
+        <thead>
+            <tr><th>Country</th><th>Runways</th>
+        </thead>
+        <tbody>
+        @for(item <- list) {
             <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
         }
         </tbody>

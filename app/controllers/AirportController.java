@@ -41,12 +41,18 @@ public class AirportController extends Controller {
 
 	public Result reports() {
 		final Comparator<Pair<Country, Integer>> comp = Comparator.comparing(p -> p.getRight());
-		return ok(views.html.reports.render(asScala(getList(comp.reversed())), asScala(getList(comp))));
+		return ok(views.html.reports.render(asScala(airports(comp.reversed())), asScala(airports(comp)), asScala(runways())));
 	}
 
-	private List<Pair<Country, Integer>> getList(final Comparator<Pair<Country, Integer>> comp) {
-		final Map<String, Country> cbc = airports.getCountriesByCode();
-		return airports.getAirportsByCountry().entrySet().stream().map(entry -> Pair.of(cbc.get(entry.getKey()), entry.getValue().size())).sorted(comp).limit(10).collect(Collectors.toList());
+	private List<Pair<Country, Integer>> airports(final Comparator<Pair<Country, Integer>> comp) {
+		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
+		return airports.getCountries().stream().map(c -> Pair.of(c, Optional.ofNullable(abc.get(c.getCode())).map(l -> l.size()).orElse(0))).sorted(comp).limit(10).collect(Collectors.toList());
+	}
+
+	private List<Pair<Country, List<String>>> runways() {
+		final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
+		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
+		return Collections.emptyList();
 	}
 
 	public Result listAirports() {
