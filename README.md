@@ -1,8 +1,6 @@
-[<img src="https://img.shields.io/travis/playframework/play-java-forms-example.svg"/>](https://travis-ci.org/playframework/play-java-forms-example)
+# Airports
 
-# play-java-forms-example
-
-This example shows form processing and form helper handling in Play.
+This is an example of airport management in Play.
 
 ## How to run
 
@@ -14,6 +12,6 @@ sbt run
 
 And open http://localhost:9000/
 
-## Documentation
+## Persistence
 
-Please see https://playframework.com/documentation/latest/JavaForms
+On the first run, data will be retrieved from the internet. Then it will be persisted on disk and loaded from there on subsequent runs, hopefully faster.

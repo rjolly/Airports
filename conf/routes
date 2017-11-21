@@ -5,10 +5,6 @@
 # Home page
 GET     /                           controllers.AirportController.index
 
-# Widgets
-GET     /widgets                    controllers.WidgetController.listWidgets
-POST    /widgets                    controllers.WidgetController.createWidget
-
 # Airports
 GET     /airports                   controllers.AirportController.listAirports
 
