@@ -29,10 +29,16 @@ import static play.libs.Scala.asScala;
 public class AirportController extends Controller {
 	private final Form<AirportData> form;
 	private final Airports airports;
+	final Map<Integer, List<Runway>> rba;
+	final Map<String, List<Airport>> abc;
+	final Map<String, Country> cbc;
 
 	@Inject
 	public AirportController(final FormFactory formFactory, final Airports airports) {
 		this.form = formFactory.form(AirportData.class);
+		rba = airports.getRunwaysByAirport();
+		abc = airports.getAirportsByCountry();
+		cbc = airports.getCountriesByCode();
 		this.airports = airports;
 	}
 
@@ -46,14 +52,11 @@ public class AirportController extends Controller {
 	}
 
 	private List<Pair<Country, Integer>> airports(final Comparator<Pair<Country, Integer>> comp) {
-		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
 		return airports.getCountries().stream().map(c -> Pair.of(c, orEmpty(abc.get(c.getCode())).size())).sorted(comp).limit(10).collect(Collectors.toList());
 	}
 
 	private List<Pair<Country, List<String>>> runways() {
 		final Comparator<Pair<Country, List<String>>> comp = Comparator.comparing(p -> p.getLeft().getName());
-		final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
-		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
 		return airports.getCountries().stream().map(
 			c -> Pair.of(
 				c,
@@ -69,8 +72,6 @@ public class AirportController extends Controller {
 	private List<Pair<String, Integer>> runwayIds() {
 		final Map<String, Integer> map = new HashMap<>();
 		final Comparator<Pair<String, Integer>> comp = Comparator.comparing(p -> p.getRight());
-		final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
-		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
 		airports.getCountries().stream().forEach(
 			c -> orEmpty(abc.get(c.getCode())).stream().forEach(
 				a -> orEmpty(rba.get(a.getId())).stream().forEach(
@@ -102,9 +103,6 @@ public class AirportController extends Controller {
 			final Comparator<Pair<Airport, List<Runway>>> comp = Comparator.comparing(p -> p.getLeft().getName());
 			final Optional<String> countryName = Optional.ofNullable(data.getCountryName()).map(c -> c.toLowerCase()).filter(c -> !c.isEmpty());
 			final String countryCode = Optional.ofNullable(data.getCountryCode()).map(c -> c.toUpperCase()).filter(c -> !c.isEmpty()).orElse(countryName.map(name -> getCountryCode(name)).orElse(null));
-			final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
-			final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
-			final Map<String, Country> cbc = airports.getCountriesByCode();
 			return ok(views.html.listAirports.render(
 				Optional.ofNullable(countryCode).map(c -> cbc.get(c)).orElse(null),
 				asScala(orEmpty(abc.get(countryCode)).stream().map(
