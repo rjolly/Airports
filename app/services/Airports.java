@@ -12,4 +12,5 @@ public interface Airports {
 	List<Runway> getRunways();
 	Map<Integer, List<Runway>> getRunwaysByAirport();
 	Map<String, List<Airport>> getAirportsByCountry();
+	Map<String, Country> getCountriesByCode();
 }

@@ -7,6 +7,8 @@ import play.mvc.Controller;
 import play.mvc.Result;
 
 import services.Airports;
+
+import models.Country;
 import models.Airport;
 import models.Runway;
 
@@ -42,14 +44,25 @@ public class AirportController extends Controller {
 		if (boundForm.hasErrors()) {
 			Logger.ALogger logger = Logger.of(getClass());
 			logger.error("errors = {}", boundForm.errors());
-			return badRequest(views.html.listAirports.render(asScala(Collections.emptyList()), boundForm));
+			return badRequest(views.html.listAirports.render(null, asScala(Collections.emptyList()), boundForm));
 		} else {
 			final AirportData data = boundForm.get();
-			final String countryCode = Optional.ofNullable(data.getCountryCode()).map(c -> c.toUpperCase()).orElse(null);
+			final Optional<String> countryName = Optional.ofNullable(data.getCountryName()).map(c -> c.toLowerCase()).filter(c -> !c.isEmpty());
+			final String countryCode = Optional.ofNullable(data.getCountryCode()).map(c -> c.toUpperCase()).filter(c -> !c.isEmpty()).orElse(countryName.map(name -> getCountryCode(name)).orElse(null));
 			final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
 			final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
-			return ok(views.html.listAirports.render(asScala(abc.containsKey(countryCode)?abc.get(countryCode).stream().map(airport -> Pair.of(airport, rba.get(airport.id))).collect(Collectors.toList()):Collections.emptyList()), boundForm));
+			final Map<String, Country> cbc = airports.getCountriesByCode();
+			return ok(views.html.listAirports.render(Optional.ofNullable(countryCode).map(c -> cbc.get(c)).orElse(null), asScala(abc.containsKey(countryCode)?abc.get(countryCode).stream().map(airport -> Pair.of(airport, rba.get(airport.id))).collect(Collectors.toList()):Collections.emptyList()), boundForm));
 		}
+	}
+
+	private String getCountryCode(final String countryName) {
+		for (final Country country : airports.getCountries()) {
+			if (country.getName().toLowerCase().startsWith(countryName)) {
+				return country.getCode();
+			}
+		}
+		return null;
 	}
 
 	public Result size() {

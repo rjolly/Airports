@@ -1,8 +1,8 @@
-@(list: Seq[org.apache.commons.lang3.tuple.Pair[Airport, java.util.List[Runway]]], form: Form[AirportData])
+@(country: Country, list: Seq[org.apache.commons.lang3.tuple.Pair[Airport, java.util.List[Runway]]], form: Form[AirportData])
 
 @main("Airports") {
 
-    <h1>Airports</h1>
+    <h1>Airports @Option(country).map(c => "of " + c).orNull</h1>
 
     <table>
         <thead>

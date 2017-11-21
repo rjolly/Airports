@@ -30,6 +30,7 @@ public class Main implements Airports {
 	private final List<Runway> runways = new ArrayList<>();
 	private final Map<Integer, List<Runway>> runwaysByAirport = new HashMap<>();
 	private final Map<String, List<Airport>> airportsByCountry = new HashMap<>();
+	private final Map<String, Country> countriesByCode = new HashMap<>();
 
 	public Main() {
 		if (file.exists()) {
@@ -62,6 +63,9 @@ public class Main implements Airports {
 				airportsByCountry.put(code, list = new ArrayList<>());
 			}
 			list.add(airport);
+		});
+		countries.stream().forEach(country -> {
+			countriesByCode.put(country.getCode(), country);
 		});
 	}
 
@@ -131,6 +135,10 @@ public class Main implements Airports {
 
 	public Map<String, List<Airport>> getAirportsByCountry() {
 		return airportsByCountry;
+	}
+
+	public Map<String, Country> getCountriesByCode() {
+		return countriesByCode;
 	}
 
 	public static void main(final String args[]) {
