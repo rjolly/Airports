@@ -1,4 +1,4 @@
-@(high: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], low: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], list: Seq[org.apache.commons.lang3.tuple.Pair[Country, java.util.List[String]]])
+@(high: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], low: Seq[org.apache.commons.lang3.tuple.Pair[Country, Integer]], runways: Seq[org.apache.commons.lang3.tuple.Pair[Country, java.util.List[String]]], ids: Seq[org.apache.commons.lang3.tuple.Pair[String, Integer]])
 
 @main("Reports") {
 
@@ -37,7 +37,20 @@
             <tr><th>Country</th><th>Runways</th>
         </thead>
         <tbody>
-        @for(item <- list) {
+        @for(item <- runways) {
+            <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <h2>Most common runway identifications</h2>
+
+    <table>
+        <thead>
+            <tr><th>Id</th><th>Count</th>
+        </thead>
+        <tbody>
+        @for(item <- ids) {
             <tr><td>@item.getLeft()</td><td>@item.getRight()</td></tr>
         }
         </tbody>

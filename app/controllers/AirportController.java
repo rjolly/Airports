@@ -14,7 +14,7 @@ import models.Runway;
 
 import java.util.Map;
 import java.util.List;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.Comparator;
@@ -42,7 +42,7 @@ public class AirportController extends Controller {
 
 	public Result reports() {
 		final Comparator<Pair<Country, Integer>> comp = Comparator.comparing(p -> p.getRight());
-		return ok(views.html.reports.render(asScala(airports(comp.reversed())), asScala(airports(comp)), asScala(runways())));
+		return ok(views.html.reports.render(asScala(airports(comp.reversed())), asScala(airports(comp)), asScala(runways()), asScala(runwayIds())));
 	}
 
 	private List<Pair<Country, Integer>> airports(final Comparator<Pair<Country, Integer>> comp) {
@@ -64,6 +64,26 @@ public class AirportController extends Controller {
 				).distinct().collect(Collectors.toList())
 			)
 		).sorted(comp).collect(Collectors.toList());
+	}
+
+	private List<Pair<String, Integer>> runwayIds() {
+		final Map<String, Integer> map = new HashMap<>();
+		final Comparator<Pair<String, Integer>> comp = Comparator.comparing(p -> p.getRight());
+		final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
+		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
+		airports.getCountries().stream().forEach(
+			c -> orEmpty(abc.get(c.getCode())).stream().forEach(
+				a -> orEmpty(rba.get(a.getId())).stream().forEach(
+					r -> {
+						final String id = r.getLe_ident();
+						map.put(id, Optional.ofNullable(map.get(id)).orElse(0) + 1);
+					}
+				)
+			)
+		);
+		return map.entrySet().stream().map(
+			e -> Pair.of(e.getKey(), e.getValue())
+		).sorted(comp.reversed()).limit(10).collect(Collectors.toList());
 	}
 
 	private <T> List<T> orEmpty(final List<T> list) {
