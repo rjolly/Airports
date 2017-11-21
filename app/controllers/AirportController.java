@@ -14,6 +14,7 @@ import models.Runway;
 
 import java.util.Map;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.Collections;
 import java.util.Comparator;
@@ -46,13 +47,27 @@ public class AirportController extends Controller {
 
 	private List<Pair<Country, Integer>> airports(final Comparator<Pair<Country, Integer>> comp) {
 		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
-		return airports.getCountries().stream().map(c -> Pair.of(c, Optional.ofNullable(abc.get(c.getCode())).map(l -> l.size()).orElse(0))).sorted(comp).limit(10).collect(Collectors.toList());
+		return airports.getCountries().stream().map(c -> Pair.of(c, orEmpty(abc.get(c.getCode())).size())).sorted(comp).limit(10).collect(Collectors.toList());
 	}
 
 	private List<Pair<Country, List<String>>> runways() {
+		final Comparator<Pair<Country, List<String>>> comp = Comparator.comparing(p -> p.getLeft().getName());
 		final Map<Integer, List<Runway>> rba = airports.getRunwaysByAirport();
 		final Map<String, List<Airport>> abc = airports.getAirportsByCountry();
-		return Collections.emptyList();
+		return airports.getCountries().stream().map(
+			c -> Pair.of(
+				c,
+				orEmpty(abc.get(c.getCode())).stream().flatMap(
+					a -> orEmpty(rba.get(a.getId())).stream().map(
+						r -> Optional.ofNullable(r.getSurface()).orElse("")
+					).filter(s -> !s.isEmpty())
+				).distinct().collect(Collectors.toList())
+			)
+		).sorted(comp).collect(Collectors.toList());
+	}
+
+	private <T> List<T> orEmpty(final List<T> list) {
+		return Optional.ofNullable(list).orElse(Collections.emptyList());
 	}
 
 	public Result listAirports() {
