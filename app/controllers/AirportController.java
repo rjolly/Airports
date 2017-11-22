@@ -72,15 +72,11 @@ public class AirportController extends Controller {
 	private List<Pair<String, Integer>> runwayIds() {
 		final Map<String, Integer> map = new HashMap<>();
 		final Comparator<Pair<String, Integer>> comp = Comparator.comparing(p -> p.getRight());
-		airports.getCountries().stream().forEach(
-			c -> orEmpty(abc.get(c.getCode())).stream().forEach(
-				a -> orEmpty(rba.get(a.getId())).stream().forEach(
-					r -> {
-						final String id = r.getLe_ident();
-						map.put(id, Optional.ofNullable(map.get(id)).orElse(0) + 1);
-					}
-				)
-			)
+		airports.getRunways().stream().forEach(
+			r -> {
+				final String id = r.getLe_ident();
+				map.put(id, Optional.ofNullable(map.get(id)).orElse(0) + 1);
+			}
 		);
 		return map.entrySet().stream().map(
 			e -> Pair.of(e.getKey(), e.getValue())
@@ -120,9 +116,5 @@ public class AirportController extends Controller {
 			}
 		}
 		return null;
-	}
-
-	public Result size() {
-		return ok(Integer.toString(airports.getAirports().size()));
 	}
 }
